@@ -1,0 +1,7 @@
+/* M365 License Manager - estilos do dashboard */
+.m365-dashboard .card-sm .avatar { font-size: 1.1rem; }
+.m365-dashboard .font-weight-medium { font-size: 1.4rem; font-weight: 600; }
+.m365-dashboard canvas { max-height: 320px; }
+.m365-badge-critical { background:#D13438; color:#fff; }
+.m365-badge-warning  { background:#F2A900; color:#000; }
+.m365-badge-info     { background:#0078D4; color:#fff; }
