@@ -34,7 +34,7 @@ Governança, auditoria e controle de custos de licenças **Microsoft 365** dentr
 
 ```bash
 cd /var/www/glpi/plugins
-git clone https://github.com/SEU-USUARIO/glpi-m365.git m365
+git clone https://github.com/joaopedrocastor/glpi-m365-license-manager.git m365
 ```
 
 1. GLPI → **Configurar → Plugins** → instalar e ativar **M365 License Manager**.
