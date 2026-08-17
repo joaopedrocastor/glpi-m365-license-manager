@@ -9,13 +9,13 @@ if (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access this file directly");
 }
 
-class PluginM365GraphClient {
+class PluginM365licenseGraphClient {
 
-    private PluginM365Config $config;
+    private PluginM365licenseConfig $config;
     private ?string $accessToken = null;
 
-    public function __construct(?PluginM365Config $config = null) {
-        $this->config = $config ?? PluginM365Config::getInstance();
+    public function __construct(?PluginM365licenseConfig $config = null) {
+        $this->config = $config ?? PluginM365licenseConfig::getInstance();
     }
 
     // -----------------------------------------------------------------

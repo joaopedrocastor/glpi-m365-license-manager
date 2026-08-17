@@ -6,20 +6,20 @@
 /**
  * Instalação: cria as tabelas e registra permissões e cron.
  */
-function plugin_m365_install() {
+function plugin_m365license_install() {
     global $DB;
 
     $default_charset   = DBConnection::getDefaultCharset();
     $default_collation = DBConnection::getDefaultCollation();
     $default_key_sign  = DBConnection::getDefaultPrimaryKeySignOption();
 
-    $migration = new Migration(PLUGIN_M365_VERSION);
+    $migration = new Migration(PLUGIN_M365LICENSE_VERSION);
 
     // ---------------------------------------------------------------
-    // glpi_plugin_m365_configs
+    // glpi_plugin_m365license_configs
     // ---------------------------------------------------------------
-    if (!$DB->tableExists('glpi_plugin_m365_configs')) {
-        $query = "CREATE TABLE `glpi_plugin_m365_configs` (
+    if (!$DB->tableExists('glpi_plugin_m365license_configs')) {
+        $query = "CREATE TABLE `glpi_plugin_m365license_configs` (
             `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
             `tenant_id` varchar(255) DEFAULT NULL,
             `client_id` varchar(255) DEFAULT NULL,
@@ -42,7 +42,7 @@ function plugin_m365_install() {
         $DB->doQuery($query);
 
         // Linha única de configuração
-        $DB->insert('glpi_plugin_m365_configs', [
+        $DB->insert('glpi_plugin_m365license_configs', [
             'id'            => 1,
             'is_active'     => 0,
             'date_creation' => $_SESSION['glpi_currenttime'] ?? date('Y-m-d H:i:s'),
@@ -50,10 +50,10 @@ function plugin_m365_install() {
     }
 
     // ---------------------------------------------------------------
-    // glpi_plugin_m365_licenses  (SKUs contratados no tenant)
+    // glpi_plugin_m365license_licenses  (SKUs contratados no tenant)
     // ---------------------------------------------------------------
-    if (!$DB->tableExists('glpi_plugin_m365_licenses')) {
-        $query = "CREATE TABLE `glpi_plugin_m365_licenses` (
+    if (!$DB->tableExists('glpi_plugin_m365license_licenses')) {
+        $query = "CREATE TABLE `glpi_plugin_m365license_licenses` (
             `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
             `sku_id` varchar(255) NOT NULL COMMENT 'skuId do Graph (GUID)',
             `sku_part_number` varchar(255) NOT NULL COMMENT 'Ex: SPB, ENTERPRISEPACK',
@@ -75,10 +75,10 @@ function plugin_m365_install() {
     }
 
     // ---------------------------------------------------------------
-    // glpi_plugin_m365_users  (usuários do Entra ID)
+    // glpi_plugin_m365license_users  (usuários do Entra ID)
     // ---------------------------------------------------------------
-    if (!$DB->tableExists('glpi_plugin_m365_users')) {
-        $query = "CREATE TABLE `glpi_plugin_m365_users` (
+    if (!$DB->tableExists('glpi_plugin_m365license_users')) {
+        $query = "CREATE TABLE `glpi_plugin_m365license_users` (
             `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
             `azure_id` varchar(255) NOT NULL COMMENT 'id (objectId) do Graph',
             `display_name` varchar(255) DEFAULT NULL,
@@ -106,29 +106,29 @@ function plugin_m365_install() {
     }
 
     // ---------------------------------------------------------------
-    // glpi_plugin_m365_userlicenses  (N:N usuário <-> licença)
+    // glpi_plugin_m365license_userlicenses  (N:N usuário <-> licença)
     // ---------------------------------------------------------------
-    if (!$DB->tableExists('glpi_plugin_m365_userlicenses')) {
-        $query = "CREATE TABLE `glpi_plugin_m365_userlicenses` (
+    if (!$DB->tableExists('glpi_plugin_m365license_userlicenses')) {
+        $query = "CREATE TABLE `glpi_plugin_m365license_userlicenses` (
             `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
-            `plugin_m365_users_id` int {$default_key_sign} NOT NULL,
-            `plugin_m365_licenses_id` int {$default_key_sign} NOT NULL,
+            `plugin_m365license_users_id` int {$default_key_sign} NOT NULL,
+            `plugin_m365license_licenses_id` int {$default_key_sign} NOT NULL,
             `assigned_datetime` timestamp NULL DEFAULT NULL,
             `date_creation` timestamp NULL DEFAULT NULL,
             PRIMARY KEY (`id`),
-            UNIQUE KEY `unicity` (`plugin_m365_users_id`,`plugin_m365_licenses_id`),
-            KEY `plugin_m365_licenses_id` (`plugin_m365_licenses_id`)
+            UNIQUE KEY `unicity` (`plugin_m365license_users_id`,`plugin_m365license_licenses_id`),
+            KEY `plugin_m365license_licenses_id` (`plugin_m365license_licenses_id`)
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
         $DB->doQuery($query);
     }
 
     // ---------------------------------------------------------------
-    // glpi_plugin_m365_costs  (histórico mensal de custo por SKU)
+    // glpi_plugin_m365license_costs  (histórico mensal de custo por SKU)
     // ---------------------------------------------------------------
-    if (!$DB->tableExists('glpi_plugin_m365_costs')) {
-        $query = "CREATE TABLE `glpi_plugin_m365_costs` (
+    if (!$DB->tableExists('glpi_plugin_m365license_costs')) {
+        $query = "CREATE TABLE `glpi_plugin_m365license_costs` (
             `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
-            `plugin_m365_licenses_id` int {$default_key_sign} NOT NULL,
+            `plugin_m365license_licenses_id` int {$default_key_sign} NOT NULL,
             `period` char(7) NOT NULL COMMENT 'YYYY-MM',
             `unit_cost` decimal(12,2) NOT NULL DEFAULT '0.00',
             `total_units` int NOT NULL DEFAULT '0',
@@ -137,16 +137,16 @@ function plugin_m365_install() {
             `wasted_cost` decimal(14,2) NOT NULL DEFAULT '0.00' COMMENT 'unidades ociosas x custo',
             `date_creation` timestamp NULL DEFAULT NULL,
             PRIMARY KEY (`id`),
-            UNIQUE KEY `unicity` (`plugin_m365_licenses_id`,`period`)
+            UNIQUE KEY `unicity` (`plugin_m365license_licenses_id`,`period`)
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
         $DB->doQuery($query);
     }
 
     // ---------------------------------------------------------------
-    // glpi_plugin_m365_alerts
+    // glpi_plugin_m365license_alerts
     // ---------------------------------------------------------------
-    if (!$DB->tableExists('glpi_plugin_m365_alerts')) {
-        $query = "CREATE TABLE `glpi_plugin_m365_alerts` (
+    if (!$DB->tableExists('glpi_plugin_m365license_alerts')) {
+        $query = "CREATE TABLE `glpi_plugin_m365license_alerts` (
             `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
             `type` varchar(50) NOT NULL COMMENT 'low_stock|inactive_user|disabled_licensed|idle_license',
             `severity` varchar(20) NOT NULL DEFAULT 'info' COMMENT 'info|warning|critical',
@@ -167,10 +167,10 @@ function plugin_m365_install() {
     }
 
     // ---------------------------------------------------------------
-    // glpi_plugin_m365_synclogs
+    // glpi_plugin_m365license_synclogs
     // ---------------------------------------------------------------
-    if (!$DB->tableExists('glpi_plugin_m365_synclogs')) {
-        $query = "CREATE TABLE `glpi_plugin_m365_synclogs` (
+    if (!$DB->tableExists('glpi_plugin_m365license_synclogs')) {
+        $query = "CREATE TABLE `glpi_plugin_m365license_synclogs` (
             `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
             `sync_type` varchar(50) NOT NULL COMMENT 'users|licenses|signin|alerts',
             `status` varchar(20) NOT NULL DEFAULT 'running' COMMENT 'running|success|error',
@@ -190,25 +190,25 @@ function plugin_m365_install() {
     $migration->executeMigration();
 
     // Semeia catálogo de SKUs conhecidos (nomes amigáveis)
-    PluginM365License::seedKnownSkus();
+    PluginM365licenseLicense::seedKnownSkus();
 
     // Permissões (profiles)
-    PluginM365Profile::initProfile();
+    PluginM365licenseProfile::initProfile();
 
     // Tarefas de cron
-    CronTask::register('PluginM365CronTask', 'syncUsers', HOUR_TIMESTAMP * 6, [
+    CronTask::register('PluginM365licenseCronTask', 'syncUsers', HOUR_TIMESTAMP * 6, [
         'comment' => 'Sincroniza usuários do Microsoft Entra ID',
         'mode'    => CronTask::MODE_EXTERNAL,
     ]);
-    CronTask::register('PluginM365CronTask', 'syncLicenses', HOUR_TIMESTAMP * 6, [
+    CronTask::register('PluginM365licenseCronTask', 'syncLicenses', HOUR_TIMESTAMP * 6, [
         'comment' => 'Sincroniza SKUs/licenças do tenant',
         'mode'    => CronTask::MODE_EXTERNAL,
     ]);
-    CronTask::register('PluginM365CronTask', 'generateAlerts', DAY_TIMESTAMP, [
+    CronTask::register('PluginM365licenseCronTask', 'generateAlerts', DAY_TIMESTAMP, [
         'comment' => 'Gera alertas de auditoria e envia notificações',
         'mode'    => CronTask::MODE_EXTERNAL,
     ]);
-    CronTask::register('PluginM365CronTask', 'monthlyReport', DAY_TIMESTAMP, [
+    CronTask::register('PluginM365licenseCronTask', 'monthlyReport', DAY_TIMESTAMP, [
         'comment' => 'Consolida custos mensais e relatório executivo',
         'mode'    => CronTask::MODE_EXTERNAL,
     ]);
@@ -219,17 +219,17 @@ function plugin_m365_install() {
 /**
  * Desinstalação: remove tabelas, cron e permissões.
  */
-function plugin_m365_uninstall() {
+function plugin_m365license_uninstall() {
     global $DB;
 
     $tables = [
-        'glpi_plugin_m365_configs',
-        'glpi_plugin_m365_licenses',
-        'glpi_plugin_m365_users',
-        'glpi_plugin_m365_userlicenses',
-        'glpi_plugin_m365_costs',
-        'glpi_plugin_m365_alerts',
-        'glpi_plugin_m365_synclogs',
+        'glpi_plugin_m365license_configs',
+        'glpi_plugin_m365license_licenses',
+        'glpi_plugin_m365license_users',
+        'glpi_plugin_m365license_userlicenses',
+        'glpi_plugin_m365license_costs',
+        'glpi_plugin_m365license_alerts',
+        'glpi_plugin_m365license_synclogs',
     ];
     foreach ($tables as $table) {
         if ($DB->tableExists($table)) {
@@ -240,13 +240,13 @@ function plugin_m365_uninstall() {
     // Remove cron
     foreach (['syncUsers', 'syncLicenses', 'generateAlerts', 'monthlyReport'] as $name) {
         $cron = new CronTask();
-        if ($cron->getFromDBByCrit(['itemtype' => 'PluginM365CronTask', 'name' => $name])) {
+        if ($cron->getFromDBByCrit(['itemtype' => 'PluginM365licenseCronTask', 'name' => $name])) {
             $cron->delete(['id' => $cron->getID()]);
         }
     }
 
     // Remove direitos dos profiles
-    PluginM365Profile::removeRights();
+    PluginM365licenseProfile::removeRights();
 
     return true;
 }

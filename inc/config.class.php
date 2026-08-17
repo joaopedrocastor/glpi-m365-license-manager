@@ -8,7 +8,7 @@ if (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access this file directly");
 }
 
-class PluginM365Config extends CommonDBTM {
+class PluginM365licenseConfig extends CommonDBTM {
 
     public static $rightname = 'config';
 
@@ -21,7 +21,7 @@ class PluginM365Config extends CommonDBTM {
     /**
      * Retorna a instância única de configuração (cache em processo).
      */
-    public static function getInstance(): PluginM365Config {
+    public static function getInstance(): PluginM365licenseConfig {
         if (self::$config === null) {
             self::$config = new self();
             if (!self::$config->getFromDB(1)) {

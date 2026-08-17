@@ -8,12 +8,12 @@ if (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access this file directly");
 }
 
-class PluginM365License extends CommonDBTM {
+class PluginM365licenseLicense extends CommonDBTM {
 
-    public static $rightname = 'plugin_m365_license';
+    public static $rightname = 'plugin_m365license_license';
 
     public static function getTypeName($nb = 0) {
-        return _n('Licença M365', 'Licenças M365', $nb, 'm365');
+        return _n('Licença M365', 'Licenças M365', $nb, 'm365license');
     }
 
     /**
@@ -134,7 +134,7 @@ class PluginM365License extends CommonDBTM {
             'wasted_cost'      => 0.0,
             'sku_count'        => 0,
         ];
-        foreach ($DB->request(['FROM' => 'glpi_plugin_m365_licenses', 'WHERE' => ['is_deleted' => 0]]) as $row) {
+        foreach ($DB->request(['FROM' => 'glpi_plugin_m365license_licenses', 'WHERE' => ['is_deleted' => 0]]) as $row) {
             $available = max(0, (int)$row['total_units'] - (int)$row['consumed_units']);
             $stats['total_contracted'] += (int)$row['total_units'];
             $stats['total_consumed']   += (int)$row['consumed_units'];
@@ -150,15 +150,15 @@ class PluginM365License extends CommonDBTM {
         $tab = [];
         $tab[] = ['id' => 'common', 'name' => self::getTypeName(2)];
         $tab[] = ['id' => 1, 'table' => self::getTable(), 'field' => 'name',
-                  'name' => __('Nome', 'm365'), 'datatype' => 'itemlink'];
+                  'name' => __('Nome', 'm365license'), 'datatype' => 'itemlink'];
         $tab[] = ['id' => 2, 'table' => self::getTable(), 'field' => 'sku_part_number',
                   'name' => 'SKU', 'datatype' => 'string'];
         $tab[] = ['id' => 3, 'table' => self::getTable(), 'field' => 'total_units',
-                  'name' => __('Contratadas', 'm365'), 'datatype' => 'number'];
+                  'name' => __('Contratadas', 'm365license'), 'datatype' => 'number'];
         $tab[] = ['id' => 4, 'table' => self::getTable(), 'field' => 'consumed_units',
-                  'name' => __('Em uso', 'm365'), 'datatype' => 'number'];
+                  'name' => __('Em uso', 'm365license'), 'datatype' => 'number'];
         $tab[] = ['id' => 5, 'table' => self::getTable(), 'field' => 'unit_cost',
-                  'name' => __('Custo unitário', 'm365'), 'datatype' => 'decimal'];
+                  'name' => __('Custo unitário', 'm365license'), 'datatype' => 'decimal'];
         return $tab;
     }
 }

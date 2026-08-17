@@ -7,14 +7,14 @@ if (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access this file directly");
 }
 
-class PluginM365Profile extends CommonDBTM {
+class PluginM365licenseProfile extends CommonDBTM {
 
     public static $rightname = 'profile';
 
     const RIGHTS = [
-        'plugin_m365_dashboard',
-        'plugin_m365_user',
-        'plugin_m365_license',
+        'plugin_m365license_dashboard',
+        'plugin_m365license_user',
+        'plugin_m365license_license',
     ];
 
     /**
@@ -56,12 +56,12 @@ class PluginM365Profile extends CommonDBTM {
      */
     public static function getAllRights(): array {
         return [
-            ['itemtype' => 'PluginM365User',    'label' => __('Dashboard M365', 'm365'),
-             'field' => 'plugin_m365_dashboard', 'rights' => [READ => __('Ler')]],
-            ['itemtype' => 'PluginM365User',    'label' => __('Usuários M365', 'm365'),
-             'field' => 'plugin_m365_user'],
-            ['itemtype' => 'PluginM365License', 'label' => __('Licenças M365', 'm365'),
-             'field' => 'plugin_m365_license'],
+            ['itemtype' => 'PluginM365licenseUser',    'label' => __('Dashboard M365', 'm365license'),
+             'field' => 'plugin_m365license_dashboard', 'rights' => [READ => __('Ler')]],
+            ['itemtype' => 'PluginM365licenseUser',    'label' => __('Usuários M365', 'm365license'),
+             'field' => 'plugin_m365license_user'],
+            ['itemtype' => 'PluginM365licenseLicense', 'label' => __('Licenças M365', 'm365license'),
+             'field' => 'plugin_m365license_license'],
         ];
     }
 }

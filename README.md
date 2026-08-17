@@ -34,7 +34,7 @@ Governança, auditoria e controle de custos de licenças **Microsoft 365** dentr
 
 ```bash
 cd /var/www/glpi/plugins
-git clone https://github.com/joaopedrocastor/glpi-m365-license-manager.git m365
+git clone https://github.com/joaopedrocastor/glpi-m365-license-manager.git m365license
 ```
 
 1. GLPI → **Configurar → Plugins** → instalar e ativar **M365 License Manager**.
@@ -43,17 +43,17 @@ git clone https://github.com/joaopedrocastor/glpi-m365-license-manager.git m365
 4. Ativar a sincronização e configurar limites/alertas.
 5. Rodar o cron do GLPI (ou aguardar a execução automática).
 
-> A pasta do plugin **deve** se chamar `m365`.
+> A pasta do plugin **deve** se chamar `m365license` (sem underline — o autoloader do GLPI não suporta `_` na chave do plugin).
 
 ## 🗄️ Modelo de dados
 
-`glpi_plugin_m365_configs`, `_licenses`, `_users`, `_userlicenses`, `_costs`, `_alerts`, `_synclogs`.
+`glpi_plugin_m365license_configs`, `_licenses`, `_users`, `_userlicenses`, `_costs`, `_alerts`, `_synclogs`.
 Ver [docs/DATABASE.md](docs/DATABASE.md) e [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ## 🔑 Segurança
 
 - Client Secret e cache de token **criptografados** com AES-256-CBC (chave derivada da `GLPIKEY`).
-- Controle por **rightnames** (`plugin_m365_dashboard`, `_user`, `_license`).
+- Controle por **rightnames** (`plugin_m365license_dashboard`, `_user`, `_license`).
 - Logs de sincronização auditáveis (`_synclogs`).
 
 ## 🛣️ Roadmap

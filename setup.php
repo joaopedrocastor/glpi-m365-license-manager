@@ -7,78 +7,77 @@
  * @license  GPLv3+
  */
 
-define('PLUGIN_M365_VERSION', '1.0.0');
+define('PLUGIN_M365LICENSE_VERSION', '1.0.0');
 
 // Faixa de compatibilidade testada
-define('PLUGIN_M365_MIN_GLPI', '10.0.0');
-define('PLUGIN_M365_MAX_GLPI', '10.0.99');
+define('PLUGIN_M365LICENSE_MIN_GLPI', '10.0.0');
+define('PLUGIN_M365LICENSE_MAX_GLPI', '10.0.99');
 
 /**
  * Init hooks do plugin.
  * Chamado toda vez que o GLPI carrega, para plugins ativos.
  */
-function plugin_init_m365() {
+function plugin_init_m365license() {
     global $PLUGIN_HOOKS;
 
     // Necessário para qualquer plugin que renderize telas/CSRF.
-    $PLUGIN_HOOKS['csrf_compliant']['m365'] = true;
+    $PLUGIN_HOOKS['csrf_compliant']['m365license'] = true;
 
     // Assets
-    $PLUGIN_HOOKS['add_css']['m365']     = 'css/m365.css';
-    $PLUGIN_HOOKS['add_javascript']['m365'] = 'js/m365.js';
+    $PLUGIN_HOOKS['add_css']['m365license']     = 'css/m365.css';
+    $PLUGIN_HOOKS['add_javascript']['m365license'] = 'js/m365.js';
 
     $plugin = new Plugin();
-    if (!$plugin->isActivated('m365')) {
+    if (!$plugin->isActivated('m365license')) {
         return;
     }
 
     // Registro explícito das classes (autoloader clássico do GLPI faz o resto,
     // mas o registro garante rightname/searchoptions).
-    Plugin::registerClass('PluginM365Config',      ['addtabon' => []]);
-    Plugin::registerClass('PluginM365License');
-    Plugin::registerClass('PluginM365User');
-    Plugin::registerClass('PluginM365UserLicense');
-    Plugin::registerClass('PluginM365Cost');
-    Plugin::registerClass('PluginM365Alert');
-    Plugin::registerClass('PluginM365SyncLog');
+    Plugin::registerClass('PluginM365licenseConfig',      ['addtabon' => []]);
+    Plugin::registerClass('PluginM365licenseLicense');
+    Plugin::registerClass('PluginM365licenseUser');
+    Plugin::registerClass('PluginM365licenseUserLicense');
+    Plugin::registerClass('PluginM365licenseAlert');
+    Plugin::registerClass('PluginM365licenseSyncLog');
 
     // Menu principal (Gestão)
-    if (Session::haveRight('plugin_m365_dashboard', READ)) {
-        $PLUGIN_HOOKS['menu_toplevel']['m365'] = [];
-        $PLUGIN_HOOKS['menu']['m365'] = [
-            'id'    => 'm365',
+    if (Session::haveRight('plugin_m365license_dashboard', READ)) {
+        $PLUGIN_HOOKS['menu_toplevel']['m365license'] = [];
+        $PLUGIN_HOOKS['menu']['m365license'] = [
+            'id'    => 'm365license',
             'title' => 'M365 Licenses',
-            'page'  => '/plugins/m365/front/dashboard.php',
+            'page'  => '/plugins/m365license/front/dashboard.php',
             'icon'  => 'ti ti-brand-windows',
             'content' => [
                 'dashboard' => [
-                    'title' => __('Dashboard', 'm365'),
-                    'page'  => '/plugins/m365/front/dashboard.php',
+                    'title' => __('Dashboard', 'm365license'),
+                    'page'  => '/plugins/m365license/front/dashboard.php',
                     'icon'  => 'ti ti-dashboard',
                 ],
                 'user' => [
-                    'title' => __('Usuários M365', 'm365'),
-                    'page'  => '/plugins/m365/front/user.php',
+                    'title' => __('Usuários M365', 'm365license'),
+                    'page'  => '/plugins/m365license/front/user.php',
                     'icon'  => 'ti ti-users',
                 ],
                 'license' => [
-                    'title' => __('Licenças', 'm365'),
-                    'page'  => '/plugins/m365/front/license.php',
+                    'title' => __('Licenças', 'm365license'),
+                    'page'  => '/plugins/m365license/front/license.php',
                     'icon'  => 'ti ti-license',
                 ],
                 'cost' => [
-                    'title' => __('Financeiro', 'm365'),
-                    'page'  => '/plugins/m365/front/cost.php',
+                    'title' => __('Financeiro', 'm365license'),
+                    'page'  => '/plugins/m365license/front/cost.php',
                     'icon'  => 'ti ti-currency-dollar',
                 ],
                 'report' => [
-                    'title' => __('Relatórios', 'm365'),
-                    'page'  => '/plugins/m365/front/report.php',
+                    'title' => __('Relatórios', 'm365license'),
+                    'page'  => '/plugins/m365license/front/report.php',
                     'icon'  => 'ti ti-file-report',
                 ],
                 'alert' => [
-                    'title' => __('Alertas', 'm365'),
-                    'page'  => '/plugins/m365/front/alert.php',
+                    'title' => __('Alertas', 'm365license'),
+                    'page'  => '/plugins/m365license/front/alert.php',
                     'icon'  => 'ti ti-bell',
                 ],
             ],
@@ -87,27 +86,27 @@ function plugin_init_m365() {
 
     // Configuração (engrenagem em Configurar > Plugins)
     if (Session::haveRight('config', UPDATE)) {
-        $PLUGIN_HOOKS['config_page']['m365'] = 'front/config.form.php';
+        $PLUGIN_HOOKS['config_page']['m365license'] = 'front/config.form.php';
     }
 
     // Tarefas automáticas (CRON)
-    $PLUGIN_HOOKS['csrf_compliant']['m365'] = true;
+    $PLUGIN_HOOKS['csrf_compliant']['m365license'] = true;
 }
 
 /**
  * Metadados do plugin (aba Plugins do GLPI).
  */
-function plugin_version_m365() {
+function plugin_version_m365license() {
     return [
         'name'           => 'M365 License Manager',
-        'version'        => PLUGIN_M365_VERSION,
+        'version'        => PLUGIN_M365LICENSE_VERSION,
         'author'         => 'Joao Pedro',
         'license'        => 'GPLv3+',
-        'homepage'       => 'https://github.com/seu-org/glpi-m365',
+        'homepage'       => 'https://github.com/joaopedrocastor/glpi-m365-license-manager',
         'requirements'   => [
             'glpi' => [
-                'min' => PLUGIN_M365_MIN_GLPI,
-                'max' => PLUGIN_M365_MAX_GLPI,
+                'min' => PLUGIN_M365LICENSE_MIN_GLPI,
+                'max' => PLUGIN_M365LICENSE_MAX_GLPI,
             ],
             'php' => [
                 'min' => '8.0',
@@ -119,13 +118,13 @@ function plugin_version_m365() {
 /**
  * Pré-requisitos de instalação.
  */
-function plugin_m365_check_prerequisites() {
+function plugin_m365license_check_prerequisites() {
     if (!function_exists('curl_init')) {
-        echo __('A extensão PHP cURL é obrigatória.', 'm365');
+        echo __('A extensão PHP cURL é obrigatória.', 'm365license');
         return false;
     }
     if (!function_exists('openssl_encrypt')) {
-        echo __('A extensão PHP OpenSSL é obrigatória (criptografia do Client Secret).', 'm365');
+        echo __('A extensão PHP OpenSSL é obrigatória (criptografia do Client Secret).', 'm365license');
         return false;
     }
     return true;
@@ -134,6 +133,6 @@ function plugin_m365_check_prerequisites() {
 /**
  * Checagem de configuração antes de ativar.
  */
-function plugin_m365_check_config($verbose = false) {
+function plugin_m365license_check_config($verbose = false) {
     return true;
 }

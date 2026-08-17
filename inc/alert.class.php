@@ -8,9 +8,9 @@ if (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access this file directly");
 }
 
-class PluginM365Alert extends CommonDBTM {
+class PluginM365licenseAlert extends CommonDBTM {
 
-    public static $rightname = 'plugin_m365_dashboard';
+    public static $rightname = 'plugin_m365license_dashboard';
 
     const TYPE_LOW_STOCK          = 'low_stock';
     const TYPE_INACTIVE_USER      = 'inactive_user';
@@ -18,7 +18,7 @@ class PluginM365Alert extends CommonDBTM {
     const TYPE_IDLE_LICENSE       = 'idle_license';
 
     public static function getTypeName($nb = 0) {
-        return _n('Alerta', 'Alertas', $nb, 'm365');
+        return _n('Alerta', 'Alertas', $nb, 'm365license');
     }
 
     /**
@@ -56,7 +56,7 @@ class PluginM365Alert extends CommonDBTM {
      */
     public static function dispatchPending(): int {
         global $DB;
-        $config = PluginM365Config::getInstance();
+        $config = PluginM365licenseConfig::getInstance();
         $sent = 0;
 
         foreach ($DB->request(['FROM' => self::getTable(), 'WHERE' => ['is_notified' => 0, 'is_resolved' => 0]]) as $row) {
@@ -137,15 +137,15 @@ class PluginM365Alert extends CommonDBTM {
         $tab = [];
         $tab[] = ['id' => 'common', 'name' => self::getTypeName(2)];
         $tab[] = ['id' => 1, 'table' => self::getTable(), 'field' => 'title',
-                  'name' => __('Título', 'm365'), 'datatype' => 'itemlink'];
+                  'name' => __('Título', 'm365license'), 'datatype' => 'itemlink'];
         $tab[] = ['id' => 2, 'table' => self::getTable(), 'field' => 'type',
-                  'name' => __('Tipo', 'm365'), 'datatype' => 'string'];
+                  'name' => __('Tipo', 'm365license'), 'datatype' => 'string'];
         $tab[] = ['id' => 3, 'table' => self::getTable(), 'field' => 'severity',
-                  'name' => __('Severidade', 'm365'), 'datatype' => 'string'];
+                  'name' => __('Severidade', 'm365license'), 'datatype' => 'string'];
         $tab[] = ['id' => 4, 'table' => self::getTable(), 'field' => 'is_resolved',
-                  'name' => __('Resolvido', 'm365'), 'datatype' => 'bool'];
+                  'name' => __('Resolvido', 'm365license'), 'datatype' => 'bool'];
         $tab[] = ['id' => 5, 'table' => self::getTable(), 'field' => 'date_creation',
-                  'name' => __('Criado em', 'm365'), 'datatype' => 'datetime'];
+                  'name' => __('Criado em', 'm365license'), 'datatype' => 'datetime'];
         return $tab;
     }
 }

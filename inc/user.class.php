@@ -7,12 +7,12 @@ if (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access this file directly");
 }
 
-class PluginM365User extends CommonDBTM {
+class PluginM365licenseUser extends CommonDBTM {
 
-    public static $rightname = 'plugin_m365_user';
+    public static $rightname = 'plugin_m365license_user';
 
     public static function getTypeName($nb = 0) {
-        return _n('Usuário M365', 'Usuários M365', $nb, 'm365');
+        return _n('Usuário M365', 'Usuários M365', $nb, 'm365license');
     }
 
     /**
@@ -60,7 +60,7 @@ class PluginM365User extends CommonDBTM {
             $result = 'created';
         }
 
-        PluginM365UserLicense::syncForUser((int)$id, $licenses);
+        PluginM365licenseUserLicense::syncForUser((int)$id, $licenses);
         return $result;
     }
 
@@ -103,7 +103,7 @@ class PluginM365User extends CommonDBTM {
         $limit = date('Y-m-d H:i:s', strtotime("-$days days"));
         $rows = [];
         $it = $DB->request([
-            'FROM'  => 'glpi_plugin_m365_users',
+            'FROM'  => 'glpi_plugin_m365license_users',
             'WHERE' => [
                 'is_deleted'    => 0,
                 'license_count' => ['>', 0],
@@ -124,7 +124,7 @@ class PluginM365User extends CommonDBTM {
         global $DB;
         $rows = [];
         $it = $DB->request([
-            'FROM'  => 'glpi_plugin_m365_users',
+            'FROM'  => 'glpi_plugin_m365license_users',
             'WHERE' => ['is_deleted' => 0, 'account_enabled' => 0, 'license_count' => ['>', 0]],
         ]);
         foreach ($it as $row) {
@@ -138,7 +138,7 @@ class PluginM365User extends CommonDBTM {
         global $DB;
         $rows = [];
         foreach ($DB->request([
-            'FROM'  => 'glpi_plugin_m365_users',
+            'FROM'  => 'glpi_plugin_m365license_users',
             'WHERE' => ['is_deleted' => 0, 'account_enabled' => 1, 'license_count' => 0],
         ]) as $row) {
             $rows[] = $row;
@@ -151,7 +151,7 @@ class PluginM365User extends CommonDBTM {
         global $DB;
         $rows = [];
         foreach ($DB->request([
-            'FROM'  => 'glpi_plugin_m365_users',
+            'FROM'  => 'glpi_plugin_m365license_users',
             'WHERE' => ['is_deleted' => 0, 'license_count' => ['>', 1]],
         ]) as $row) {
             $rows[] = $row;
@@ -165,7 +165,7 @@ class PluginM365User extends CommonDBTM {
         $out = [];
         $it = $DB->request([
             'SELECT'  => ['department', 'COUNT' => '* AS cnt'],
-            'FROM'    => 'glpi_plugin_m365_users',
+            'FROM'    => 'glpi_plugin_m365license_users',
             'WHERE'   => ['is_deleted' => 0],
             'GROUPBY' => 'department',
             'ORDER'   => 'cnt DESC',
@@ -180,21 +180,21 @@ class PluginM365User extends CommonDBTM {
         $tab = [];
         $tab[] = ['id' => 'common', 'name' => self::getTypeName(2)];
         $tab[] = ['id' => 1, 'table' => self::getTable(), 'field' => 'display_name',
-                  'name' => __('Nome', 'm365'), 'datatype' => 'itemlink'];
+                  'name' => __('Nome', 'm365license'), 'datatype' => 'itemlink'];
         $tab[] = ['id' => 2, 'table' => self::getTable(), 'field' => 'user_principal_name',
                   'name' => 'UPN', 'datatype' => 'string'];
         $tab[] = ['id' => 3, 'table' => self::getTable(), 'field' => 'mail',
-                  'name' => __('E-mail', 'm365'), 'datatype' => 'email'];
+                  'name' => __('E-mail', 'm365license'), 'datatype' => 'email'];
         $tab[] = ['id' => 4, 'table' => self::getTable(), 'field' => 'department',
-                  'name' => __('Departamento', 'm365'), 'datatype' => 'string'];
+                  'name' => __('Departamento', 'm365license'), 'datatype' => 'string'];
         $tab[] = ['id' => 5, 'table' => self::getTable(), 'field' => 'job_title',
-                  'name' => __('Cargo', 'm365'), 'datatype' => 'string'];
+                  'name' => __('Cargo', 'm365license'), 'datatype' => 'string'];
         $tab[] = ['id' => 6, 'table' => self::getTable(), 'field' => 'account_enabled',
-                  'name' => __('Ativo', 'm365'), 'datatype' => 'bool'];
+                  'name' => __('Ativo', 'm365license'), 'datatype' => 'bool'];
         $tab[] = ['id' => 7, 'table' => self::getTable(), 'field' => 'last_signin',
-                  'name' => __('Último login', 'm365'), 'datatype' => 'datetime'];
+                  'name' => __('Último login', 'm365license'), 'datatype' => 'datetime'];
         $tab[] = ['id' => 8, 'table' => self::getTable(), 'field' => 'license_count',
-                  'name' => __('Nº licenças', 'm365'), 'datatype' => 'number'];
+                  'name' => __('Nº licenças', 'm365license'), 'datatype' => 'number'];
         return $tab;
     }
 }

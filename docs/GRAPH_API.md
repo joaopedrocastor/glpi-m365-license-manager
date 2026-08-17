@@ -94,7 +94,7 @@ ConsistencyLevel: eventual
 
 ## 5. Paginação
 
-O plugin segue `@odata.nextLink` até o fim (`PluginM365GraphClient::getAll()`), com processamento opcional em *streaming* por página para tenants grandes.
+O plugin segue `@odata.nextLink` até o fim (`PluginM365licenseGraphClient::getAll()`), com processamento opcional em *streaming* por página para tenants grandes.
 
 ## 6. Throttling
 

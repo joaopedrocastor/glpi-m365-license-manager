@@ -8,7 +8,7 @@ if (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access this file directly");
 }
 
-class PluginM365Report extends CommonGLPI {
+class PluginM365licenseReport extends CommonGLPI {
 
     const R_USER_LICENSE = 'user_license';
     const R_BY_DEPT      = 'by_department';
@@ -17,7 +17,7 @@ class PluginM365Report extends CommonGLPI {
     const R_COST_YEAR    = 'cost_year';
 
     public static function getTypeName($nb = 0) {
-        return _n('Relatório', 'Relatórios', $nb, 'm365');
+        return _n('Relatório', 'Relatórios', $nb, 'm365license');
     }
 
     /**
@@ -32,7 +32,7 @@ class PluginM365Report extends CommonGLPI {
             case self::R_USER_LICENSE:
                 $headers = ['Usuário', 'UPN', 'Departamento', 'Ativo', 'Último login', 'Nº licenças'];
                 $rows = [];
-                foreach ($DB->request(['FROM' => 'glpi_plugin_m365_users', 'WHERE' => ['is_deleted' => 0],
+                foreach ($DB->request(['FROM' => 'glpi_plugin_m365license_users', 'WHERE' => ['is_deleted' => 0],
                                        'ORDER' => 'display_name']) as $u) {
                     $rows[] = [$u['display_name'], $u['user_principal_name'], $u['department'],
                                $u['account_enabled'] ? 'Sim' : 'Não', $u['last_signin'] ?: '-', $u['license_count']];
@@ -42,7 +42,7 @@ class PluginM365Report extends CommonGLPI {
             case self::R_BY_DEPT:
                 $headers = ['Departamento', 'Usuários'];
                 $rows = [];
-                foreach (PluginM365User::countByDepartment() as $dept => $cnt) {
+                foreach (PluginM365licenseUser::countByDepartment() as $dept => $cnt) {
                     $rows[] = [$dept, $cnt];
                 }
                 return [$headers, $rows];
@@ -50,7 +50,7 @@ class PluginM365Report extends CommonGLPI {
             case self::R_IDLE:
                 $headers = ['Licença', 'Contratadas', 'Em uso', 'Ociosas', 'Custo unit.', 'Desperdício/mês'];
                 $rows = [];
-                foreach ($DB->request(['FROM' => 'glpi_plugin_m365_licenses', 'WHERE' => ['is_deleted' => 0]]) as $l) {
+                foreach ($DB->request(['FROM' => 'glpi_plugin_m365license_licenses', 'WHERE' => ['is_deleted' => 0]]) as $l) {
                     $idle = max(0, (int)$l['total_units'] - (int)$l['consumed_units']);
                     $rows[] = [$l['name'], $l['total_units'], $l['consumed_units'], $idle,
                                number_format((float)$l['unit_cost'], 2, ',', '.'),
@@ -63,7 +63,7 @@ class PluginM365Report extends CommonGLPI {
                 $mult = $type === self::R_COST_YEAR ? 12 : 1;
                 $headers = ['Licença', 'Em uso', 'Custo unit.', $mult === 12 ? 'Custo anual' : 'Custo mensal'];
                 $rows = [];
-                foreach ($DB->request(['FROM' => 'glpi_plugin_m365_licenses', 'WHERE' => ['is_deleted' => 0]]) as $l) {
+                foreach ($DB->request(['FROM' => 'glpi_plugin_m365license_licenses', 'WHERE' => ['is_deleted' => 0]]) as $l) {
                     $cost = (float)$l['unit_cost'] * (int)$l['consumed_units'] * $mult;
                     $rows[] = [$l['name'], $l['consumed_units'],
                                number_format((float)$l['unit_cost'], 2, ',', '.'),

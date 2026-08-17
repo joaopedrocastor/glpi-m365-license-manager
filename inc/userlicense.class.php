@@ -7,12 +7,12 @@ if (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access this file directly");
 }
 
-class PluginM365UserLicense extends CommonDBTM {
+class PluginM365licenseUserLicense extends CommonDBTM {
 
-    public static $rightname = 'plugin_m365_user';
+    public static $rightname = 'plugin_m365license_user';
 
     public static function getTypeName($nb = 0) {
-        return _n('Licença do usuário', 'Licenças do usuário', $nb, 'm365');
+        return _n('Licença do usuário', 'Licenças do usuário', $nb, 'm365license');
     }
 
     /**
@@ -24,7 +24,7 @@ class PluginM365UserLicense extends CommonDBTM {
 
         // Mapa skuId -> id local da licença
         $skuMap = [];
-        foreach ($DB->request(['SELECT' => ['id', 'sku_id'], 'FROM' => 'glpi_plugin_m365_licenses']) as $row) {
+        foreach ($DB->request(['SELECT' => ['id', 'sku_id'], 'FROM' => 'glpi_plugin_m365license_licenses']) as $row) {
             $skuMap[$row['sku_id']] = (int)$row['id'];
         }
 
@@ -38,22 +38,22 @@ class PluginM365UserLicense extends CommonDBTM {
         }
 
         // Remove vínculos que não existem mais
-        $DB->delete('glpi_plugin_m365_userlicenses', [
-            'plugin_m365_users_id' => $userId,
-            'NOT' => ['plugin_m365_licenses_id' => array_keys($wanted) ?: [0]],
+        $DB->delete('glpi_plugin_m365license_userlicenses', [
+            'plugin_m365license_users_id' => $userId,
+            'NOT' => ['plugin_m365license_licenses_id' => array_keys($wanted) ?: [0]],
         ]);
 
         // Adiciona os novos
         foreach (array_keys($wanted) as $licId) {
             $exists = $DB->request([
-                'FROM'  => 'glpi_plugin_m365_userlicenses',
-                'WHERE' => ['plugin_m365_users_id' => $userId, 'plugin_m365_licenses_id' => $licId],
+                'FROM'  => 'glpi_plugin_m365license_userlicenses',
+                'WHERE' => ['plugin_m365license_users_id' => $userId, 'plugin_m365license_licenses_id' => $licId],
                 'LIMIT' => 1,
             ]);
             if (iterator_count($exists) === 0) {
-                $DB->insert('glpi_plugin_m365_userlicenses', [
-                    'plugin_m365_users_id'    => $userId,
-                    'plugin_m365_licenses_id' => $licId,
+                $DB->insert('glpi_plugin_m365license_userlicenses', [
+                    'plugin_m365license_users_id'    => $userId,
+                    'plugin_m365license_licenses_id' => $licId,
                     'assigned_datetime'       => $now,
                     'date_creation'           => $now,
                 ]);

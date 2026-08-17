@@ -7,12 +7,12 @@ if (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access this file directly");
 }
 
-class PluginM365SyncLog extends CommonDBTM {
+class PluginM365licenseSyncLog extends CommonDBTM {
 
-    public static $rightname = 'plugin_m365_dashboard';
+    public static $rightname = 'plugin_m365license_dashboard';
 
     public static function getTypeName($nb = 0) {
-        return _n('Log de sincronização', 'Logs de sincronização', $nb, 'm365');
+        return _n('Log de sincronização', 'Logs de sincronização', $nb, 'm365license');
     }
 
     /**
